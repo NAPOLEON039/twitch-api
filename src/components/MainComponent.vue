@@ -1,13 +1,13 @@
 <template>
   <div id="main-component">
       <div class="navbar navbar-light bg-light container">
-       <span><input type="radio" name="users" id="all">&nbsp;<label for="all" class="badge-pill badge-primary">All Users</label></span>
-        <span><input type="radio" name="users" id="online">&nbsp;<label for="online" class="badge-pill badge-success">Online Users</label></span>
-        <span><input type="radio" name="users" id="offline">&nbsp;<label for="offline" class="badge-pill badge-secondary">Offline Users</label></span>
+       <span><input type="radio" name="users" id="all" @change="visible='all'">&nbsp;<label for="all" class="badge-pill badge-primary">All Users</label></span>
+       <span><input type="radio" name="users" id="online" @change="visible='online'">&nbsp;<label for="online" class="badge-pill badge-success">Online Users</label></span>
+       <span><input type="radio" name="users" id="offline" @change="visible='offline'">&nbsp;<label for="offline" class="badge-pill badge-secondary">Offline Users</label></span>
       </div>
-      <AllComponent/>
-      <OnlineComponent/>
-      <OfflineComponent/>
+      <AllComponent :all-users="usersToShow" v-if="visible==='all'"/>
+      <OnlineComponent :online-users="usersToShow" v-if="visible==='online'"/>
+      <OfflineComponent :offline-users="usersToShow" v-if="visible==='offline'"/>
   </div>
 </template>
 
@@ -25,8 +25,9 @@ export default {
   },
   data() {
     return {
+      visible: null,
       usersToShow: [],
-      allUsers: [
+      users: [
         {
           stream: {
             mature: false,
@@ -142,6 +143,41 @@ export default {
         }
       ]
     };
+  },
+  watch: {
+    visible() {
+      if (this.visible === "all") {
+        this.usersToShow = [];
+        let streamerStatus = "";
+        let streamerName = "";
+        let streamerLink = "#";
+        console.log(this.users);
+        for (let user in this.users) {
+          streamerStatus = "";
+          streamerName = "";
+          streamerLink = "#";
+          if (!(typeof user.stream === "object")) {
+            streamerStatus = "offline";
+            streamerName = user.display_name;
+          } else {
+            streamerStatus = "online";
+            streamerName = user.stream.display_name;
+            streamerLink = user.stream.url;
+          }
+          this.usersToShow.push({
+            status: streamerStatus,
+            name: streamerName,
+            link: streamerLink
+          });
+        }
+      }
+      if (this.visible === "online") {
+        console.log("Online users displayed");
+      }
+      if (this.visible === "offline") {
+        console.log("Offline users displayed");
+      }
+    }
   }
 };
 </script>
