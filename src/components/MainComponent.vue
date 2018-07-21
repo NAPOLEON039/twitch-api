@@ -57,10 +57,9 @@ export default {
       ]
     };
   },
-  watch: {
-    visible() {
-      if (this.visible === "all") {
-        this.usersToShow = [];
+  methods: {
+    showAllUsers() {
+      this.usersToShow = [];
         let streamerStatus = "";
         let streamerName = "";
         let streamerLink = "#";
@@ -82,49 +81,59 @@ export default {
             link: streamerLink
           });
         });
-      }
-      if (this.visible === "online") {
-        this.usersToShow = [];
-        let streamerStatus = "";
-        let streamerName = "";
-        let streamerLink = "#";
-        this.users.forEach(user => {
-          streamerStatus = "";
-          streamerName = "";
-          streamerLink = "#";
-          if (typeof user.stream === "object") {
-            streamerStatus = "online";
-            streamerName = user.stream.display_name;
-            streamerLink = user.stream.url;
+    },
+    showOnlineUsers() {
+      this.usersToShow = [];
+      let streamerStatus = "";
+      let streamerName = "";
+      let streamerLink = "#";
+      this.users.forEach(user => {
+        streamerStatus = "";
+        streamerName = "";
+        streamerLink = "#";
+        if (typeof user.stream === "object") {
+          streamerStatus = "online";
+          streamerName = user.stream.display_name;
+          streamerLink = user.stream.url;
 
-            this.usersToShow.push({
-              status: streamerStatus,
-              name: streamerName,
-              link: streamerLink
-            });
-          }
-        });
-      }
-      if (this.visible === "offline") {
-        this.usersToShow = [];
-        let streamerStatus = "";
-        let streamerName = "";
-        let streamerLink = "#";
-        this.users.forEach(user => {
-          streamerStatus = "";
-          streamerName = "";
-          streamerLink = "#";
-          if (typeof user.stream === "string") {
-            streamerStatus = "offline";
-            streamerName = user.display_name;
+          this.usersToShow.push({
+            status: streamerStatus,
+            name: streamerName,
+            link: streamerLink
+          });
+        }
+      });
+    },
+    showOffineUsers() {
+      this.usersToShow = [];
+      let streamerStatus = "";
+      let streamerName = "";
+      let streamerLink = "#";
+      this.users.forEach(user => {
+        streamerStatus = "";
+        streamerName = "";
+        streamerLink = "#";
+        if (typeof user.stream === "string") {
+          streamerStatus = "offline";
+          streamerName = user.display_name;
 
-            this.usersToShow.push({
-              status: streamerStatus,
-              name: streamerName,
-              link: streamerLink
-            });
-          }
-        });
+          this.usersToShow.push({
+            status: streamerStatus,
+            name: streamerName,
+            link: streamerLink
+          });
+        }
+      });
+    }
+  },
+  watch: {
+    visible() {
+      if (this.visible === "all") {
+        this.showAllUsers();
+      } else if (this.visible === "online") {
+        this.showOnlineUsers();
+      } else if (this.visible === "offline") {
+        this.showOffineUsers();
       }
     }
   }
